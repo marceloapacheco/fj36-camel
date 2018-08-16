@@ -15,8 +15,18 @@ public class TesteRoteamento {
 		context.addRoutes(new RouteBuilder() {
 			@Override
 			public void configure() throws Exception {
+				
+				errorHandler(
+						deadLetterChannel("file:falha").
+						useOriginalMessage().
+						maximumRedeliveries(2).
+						redeliveryDelay(2000).
+						retryAttemptedLogLevel(LoggingLevel.ERROR)
+				);
+		
 				from("file:entrada?delay=5s")
 				.log(LoggingLevel.INFO, "Processando mensagem ${id}")
+				.to("validator:file:xsd/pedido.xsd")
 				.to("file:saida");
 			}
 		});
