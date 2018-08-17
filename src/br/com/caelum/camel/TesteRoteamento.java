@@ -25,7 +25,7 @@ public class TesteRoteamento {
 				);
 		
 				from("file:entrada?delay=5s")
-				.log(LoggingLevel.INFO, "Processando mensagem ${id}")
+				.log(LoggingLevel.INFO, "Processando mensagem ${id}: ${body}")
 				.to("validator:file:xsd/pedido.xsd")
 				.to("file:saida");
 			}
